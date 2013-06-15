@@ -14,6 +14,7 @@ JSONP to extract information from an ArcGIS server.
 
 #### Export Feature
 - Usage: L.TileLayer.EsriRest(_PATH_TO_SERVICE_);
+
 ```javascript
 var wildfires = new L.TileLayer.EsriRest("http://wildfire.cr.usgs.gov/ArcGIS/rest/services/geomac_dyn/MapServer", {
     layers: '1,18',
