@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet ESRI REST Example</title>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.css" />
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.ie.css" />
+    <![endif]-->
+
+</head>
+<body>
+<div id="map" style="width: 800px; height: 600px"></div>
+
+<script src="http://cdn.leafletjs.com/leaflet-0.5.1/leaflet.js"></script>
+<script src="./TileLayer.EsriRest.js"></script>
+
+<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+<script>
+
+    var map = L.map('map').setView([39.5, -105], 8);
+
+    L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        subdomains: "1234",
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, Imagery © <a href="http://open.mapquest.com">MapQuest</a>'
+    }).addTo(map);
+
+    var wildfires = new L.TileLayer.EsriRest("http://wildfire.cr.usgs.gov/ArcGIS/rest/services/geomac_dyn/MapServer", {
+        layers: '1,18',
+        transparent: true
+    }).addTo(map);
+
+    var popup = L.popup();
+
+    function onMapClick(e) {
+        var clickedPoint = new L.Point(e.latlng.lng, e.latlng.lat);
+            wildfireUrl = wildfires.getIdentifyUrl(clickedPoint);
+
+        $.ajax({
+            type: "GET",
+            url: wildfireUrl,
+            dataType: "jsonp",
+            success: function (data) {
+                var outputText = "No Data Returned";
+                if (data && data.results.length) {
+                    outputText = "";
+                    console.log(data);
+
+                    for (result in data.results) {
+                        outputText += '<b>';
+                        outputText += data.results[result].layerName;
+                        outputText += '</b>';
+                        outputText += ":&nbsp;&nbsp;";
+                        outputText += data.results[result].value;
+
+                        if (data.results[result].attributes) {
+                            outputText += "<p style='font-size: 10px;'>";
+                            for (attribute in data.results[result].attributes) {
+                                outputText += '&nbsp;&nbsp;&nbsp;&nbsp;<b>';
+                                outputText += attribute;
+                                outputText += '</b>';
+                                outputText += ":&nbsp;&nbsp;";
+                                outputText += data.results[result].attributes[attribute];
+                                outputText += "<br/>";
+                            }
+                            outputText += "</p>";
+                        }
+                        outputText += "<br/>";
+
+
+                    }
+                }
+                popup
+                        .setLatLng(e.latlng)
+                        .setContent(outputText)
+                        .openOn(map);
+            }
+        });
+
+    }
+
+    map.on('click', onMapClick);
+
+</script>
+</body>
+</html>
+
