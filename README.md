@@ -34,4 +34,4 @@ For more information on the ESRI REST _identify_ feature [NOAA has a great page]
 See ./examples/wildfires.html to see usage
 
 ### See Also
-- There is a similar project on github that provides ESRI tiled services as well as Bing, and GeoJSON WFS.  The project can be found at this link [https://github.com/azgs/azgs-leaflet](https://github.com/azgs/azgs-leaflet)
+- There is a similar project on github that provides ESRI tiled services as well as Bing and GeoJSON WFS.  The project can be found at this link [https://github.com/azgs/azgs-leaflet](https://github.com/azgs/azgs-leaflet)
